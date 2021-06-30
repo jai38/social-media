@@ -4,14 +4,18 @@ import { Disliked } from "./Pages/Disliked/Disliked";
 import { Home } from "./Pages/Home/Home";
 import { Liked } from "./Pages/Liked/Liked";
 export const AllPostContext = React.createContext();
-export const allUsersContext = React.createContext();
-export const loadingContext = React.createContext();
-export const likePostContext = React.createContext();
-export const dislikePostContext = React.createContext();
+export const AllUsersContext = React.createContext();
+export const LoadingContext = React.createContext();
+export const LikePostContext = React.createContext();
+export const DislikePostContext = React.createContext();
+export const SearchContext = React.createContext();
+export const SearchValueContext = React.createContext();
 function App() {
   const [allUsers, setAllUsers] = useState();
   const [allPosts, setAllPosts] = useState();
+  const [copyOfPosts, setCopyOfPosts] = useState();
   const [loading, setLoading] = useState(true);
+  const [searchValue, setSearchValue] = useState("");
   const fetchData = async () => {
     const users = await fetchAllUsers();
     const posts = await fetchAllPosts(users);
@@ -50,6 +54,7 @@ function App() {
     fetchData().then(({ posts, users }) => {
       if (mounted) {
         setAllPosts(posts);
+        setCopyOfPosts(posts);
         setAllUsers(users);
         setLoading(false);
       }
@@ -60,7 +65,7 @@ function App() {
     const currentPosts = allPosts;
     currentPosts.forEach((post) => {
       if (post.id == postId) {
-        post.liked = true;
+        post.liked = !post.liked;
         post.disliked = false;
       }
     });
@@ -71,28 +76,47 @@ function App() {
     currentPosts.forEach((post) => {
       if (post.id == postId) {
         post.liked = false;
-        post.disliked = true;
+        post.disliked = !post.disliked;
       }
     });
     setAllPosts([...currentPosts]);
+  };
+  const handleSearch = (searchValue) => {
+    setSearchValue(searchValue);
+    let currentAllPosts = [];
+    let reg = new RegExp(searchValue, "i");
+    copyOfPosts.forEach((post) => {
+      if (
+        post.title.match(reg) ||
+        post.name.match(reg) ||
+        post.companyName.match(reg) ||
+        post.body.match(reg)
+      ) {
+        currentAllPosts.push(post);
+      }
+    });
+    setAllPosts([...currentAllPosts]);
   };
   return (
     <div className="App">
       <Router>
         <Switch>
-          <loadingContext.Provider value={loading}>
-            <allUsersContext.Provider value={allUsers}>
-              <AllPostContext.Provider value={allPosts}>
-                <likePostContext.Provider value={handleLikePost}>
-                  <dislikePostContext.Provider value={handleDislikePost}>
-                    <Route path="/home" component={Home} />
-                    <Route path="/liked" component={Liked} />
-                    <Route path="/disliked" component={Disliked} />
-                  </dislikePostContext.Provider>
-                </likePostContext.Provider>
-              </AllPostContext.Provider>
-            </allUsersContext.Provider>
-          </loadingContext.Provider>
+          <LoadingContext.Provider value={loading}>
+            <AllPostContext.Provider value={allPosts}>
+              <LikePostContext.Provider value={handleLikePost}>
+                <DislikePostContext.Provider value={handleDislikePost}>
+                  <SearchContext.Provider value={handleSearch}>
+                    <SearchValueContext.Provider value={searchValue}>
+                      <Route path="/home" component={Home} />
+                      <Route path="/liked" component={Liked} />
+                      <Route path="/disliked" component={Disliked} />
+                      <Route path="/" exact component={Home} />
+                    </SearchValueContext.Provider>
+                  </SearchContext.Provider>
+                </DislikePostContext.Provider>
+              </LikePostContext.Provider>
+            </AllPostContext.Provider>
+          </LoadingContext.Provider>
         </Switch>
       </Router>
     </div>

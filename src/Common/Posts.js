@@ -1,17 +1,25 @@
 import React, { useContext, useEffect } from "react";
 import { Container, Card } from "react-bootstrap";
 import { Loader } from "./Loader";
+import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
+import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
+import ThumbDownAltOutlinedIcon from "@material-ui/icons/ThumbDownAltOutlined";
+import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
+import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import "./posts.css";
 import {
   AllPostContext,
-  dislikePostContext,
-  likePostContext,
-  loadingContext,
+  DislikePostContext,
+  LikePostContext,
+  LoadingContext,
+  SearchValueContext,
 } from "../App";
 export const Posts = ({ showOnly }) => {
-  const loading = useContext(loadingContext);
+  const loading = useContext(LoadingContext);
   let allPosts = useContext(AllPostContext);
-  const likePost = useContext(likePostContext);
-  const dislikePost = useContext(dislikePostContext);
+  const likePost = useContext(LikePostContext);
+  const dislikePost = useContext(DislikePostContext);
+  const searchValue = useContext(SearchValueContext);
   if (allPosts) {
     if (showOnly == "Liked") {
       allPosts = allPosts.filter((post) => post.liked);
@@ -19,45 +27,86 @@ export const Posts = ({ showOnly }) => {
       allPosts = allPosts.filter((post) => post.disliked);
     }
   }
+  console.log(allPosts);
+  const getHighlightedText = (text, highlight) => {
+    if (highlight) {
+      const parts = text.split(new RegExp(`(${highlight})`, "gi"));
+      return (
+        <span>
+          {parts.map((part, i) => (
+            <span
+              key={i}
+              style={
+                part.toLowerCase() === highlight.toLowerCase()
+                  ? { backgroundColor: "yellow" }
+                  : {}
+              }
+            >
+              {part}
+            </span>
+          ))}
+        </span>
+      );
+    } else {
+      return text;
+    }
+  };
   const createPosts = (post, index) => {
     return (
       <>
-        <div className="d-flex justify-content-center">
-          <Card className="m-3 w-50">
+        <div className="container-div d-flex justify-content-center">
+          <Card className="post-card m-3">
             <Card.Header>
-              <div>
-                <b>By {post.name}</b>
-              </div>
-              <div style={{ fontSize: "80%" }}>
-                Employee at {post.companyName}
+              <div className="d-flex align-items-center">
+                <div>
+                  <AccountCircleOutlinedIcon style={{ fontSize: "250%" }} />
+                </div>
+                <div className="mx-2">
+                  <div>
+                    <b>{getHighlightedText(post.name, searchValue)}</b>
+                  </div>
+                  <div style={{ fontSize: "80%" }}>
+                    Employee at{" "}
+                    {getHighlightedText(post.companyName, searchValue)}
+                  </div>
+                </div>
               </div>
             </Card.Header>
             <Card.Body>
               <div>
                 <div>
-                  <b>{post.title}</b>
+                  <b>{getHighlightedText(post.title, searchValue)}</b>
                 </div>
                 <hr />
-                <div style={{ fontSize: "80%" }}>{post.body}</div>
+                <div style={{ fontSize: "80%" }}>
+                  {getHighlightedText(post.body, searchValue)}
+                </div>
               </div>
             </Card.Body>
             <Card.Footer>
-              <div className="d-flex justify-content-between">
+              <div className="d-flex justify-content-between align-items-center">
                 <div
-                  className={
-                    post.liked ? "btn btn-success" : "btn btn-outline-success"
-                  }
+                  // className={
+                  //   post.liked ? "btn btn-success" : "btn btn-outline-success"
+                  // }
                   onClick={() => likePost(post.id)}
                 >
-                  Like
+                  {post.liked ? (
+                    <ThumbUpAltIcon
+                      style={{ fontSize: "250%", color: "#198754" }}
+                    />
+                  ) : (
+                    <ThumbUpAltOutlinedIcon style={{ color: "gray" }} />
+                  )}
                 </div>
-                <div
-                  className={
-                    post.disliked ? "btn btn-danger" : "btn btn-outline-danger"
-                  }
-                  onClick={() => dislikePost(post.id)}
-                >
-                  Dislike
+                <div onClick={() => dislikePost(post.id)}>
+                  {post.disliked ? (
+                    <ThumbDownIcon
+                      style={{ fontSize: "250%", color: "#dc3545" }}
+                    />
+                  ) : (
+                    <ThumbDownAltOutlinedIcon style={{ color: "gray" }} />
+                  )}
                 </div>
               </div>
             </Card.Footer>

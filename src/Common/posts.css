@@ -1,0 +1,12 @@
+.post-card {
+  width: 50%;
+  box-shadow: 5px 5px 10px gray;
+}
+@media screen and (max-width: 780px) {
+  .post-card {
+    width: 100% !important;
+  }
+  .container-div {
+    width: 100% !important;
+  }
+}

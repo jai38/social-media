@@ -10,6 +10,8 @@ export const LikePostContext = React.createContext();
 export const DislikePostContext = React.createContext();
 export const SearchContext = React.createContext();
 export const SearchValueContext = React.createContext();
+export const DeletePostContext = React.createContext();
+export const UpdatePostContext = React.createContext();
 function App() {
   const [allUsers, setAllUsers] = useState();
   const [allPosts, setAllPosts] = useState();
@@ -97,24 +99,49 @@ function App() {
     });
     setAllPosts([...currentAllPosts]);
   };
+  const deletePost = async (postId) => {
+    // setLoading(true);
+    // const res = await fetch(
+    //   `http://jsonplaceholder.typicode.com/posts/${postId}`,
+    //   { method: "DELETE" }
+    // );
+    // const json = await res.json();
+    // console.log(json);
+    const currentAllPosts = [];
+    allPosts.forEach((post) => {
+      if (post.id != postId) {
+        currentAllPosts.push(post);
+      }
+    });
+    setAllPosts(currentAllPosts);
+    setCopyOfPosts(currentAllPosts);
+    // setLoading(false);
+  };
+  const updatePost = (postId) => {
+    console.log("Update", postId);
+  };
   return (
     <div className="App">
       <Router>
         <Switch>
           <LoadingContext.Provider value={loading}>
             <AllPostContext.Provider value={allPosts}>
-              <LikePostContext.Provider value={handleLikePost}>
-                <DislikePostContext.Provider value={handleDislikePost}>
-                  <SearchContext.Provider value={handleSearch}>
-                    <SearchValueContext.Provider value={searchValue}>
-                      <Route path="/home" component={Home} />
-                      <Route path="/liked" component={Liked} />
-                      <Route path="/disliked" component={Disliked} />
-                      <Route path="/" exact component={Home} />
-                    </SearchValueContext.Provider>
-                  </SearchContext.Provider>
-                </DislikePostContext.Provider>
-              </LikePostContext.Provider>
+              <DeletePostContext.Provider value={deletePost}>
+                <UpdatePostContext.Provider value={updatePost}>
+                  <LikePostContext.Provider value={handleLikePost}>
+                    <DislikePostContext.Provider value={handleDislikePost}>
+                      <SearchContext.Provider value={handleSearch}>
+                        <SearchValueContext.Provider value={searchValue}>
+                          <Route path="/home" component={Home} />
+                          <Route path="/liked" component={Liked} />
+                          <Route path="/disliked" component={Disliked} />
+                          <Route path="/" exact component={Home} />
+                        </SearchValueContext.Provider>
+                      </SearchContext.Provider>
+                    </DislikePostContext.Provider>
+                  </LikePostContext.Provider>
+                </UpdatePostContext.Provider>
+              </DeletePostContext.Provider>
             </AllPostContext.Provider>
           </LoadingContext.Provider>
         </Switch>

@@ -6,13 +6,17 @@ import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbDownAltOutlinedIcon from "@material-ui/icons/ThumbDownAltOutlined";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteRoundedIcon from "@material-ui/icons/DeleteRounded";
 import "./posts.css";
 import {
   AllPostContext,
+  DeletePostContext,
   DislikePostContext,
   LikePostContext,
   LoadingContext,
   SearchValueContext,
+  UpdatePostContext,
 } from "../App";
 export const Posts = ({ showOnly }) => {
   const loading = useContext(LoadingContext);
@@ -20,6 +24,8 @@ export const Posts = ({ showOnly }) => {
   const likePost = useContext(LikePostContext);
   const dislikePost = useContext(DislikePostContext);
   const searchValue = useContext(SearchValueContext);
+  const deletePost = useContext(DeletePostContext);
+  const updatePost = useContext(UpdatePostContext);
   if (allPosts) {
     if (showOnly == "Liked") {
       allPosts = allPosts.filter((post) => post.liked);
@@ -57,17 +63,40 @@ export const Posts = ({ showOnly }) => {
         <div className="container-div d-flex justify-content-center">
           <Card className="post-card m-3">
             <Card.Header>
-              <div className="d-flex align-items-center">
-                <div>
-                  <AccountCircleOutlinedIcon style={{ fontSize: "250%" }} />
-                </div>
-                <div className="mx-2">
+              <div className="d-flex justify-content-between">
+                <div className="d-flex align-items-center">
                   <div>
-                    <b>{getHighlightedText(post.name, searchValue)}</b>
+                    <AccountCircleOutlinedIcon style={{ fontSize: "250%" }} />
                   </div>
-                  <div style={{ fontSize: "80%" }}>
-                    Employee at{" "}
-                    {getHighlightedText(post.companyName, searchValue)}
+                  <div className="mx-2">
+                    <div>
+                      <b>{getHighlightedText(post.name, searchValue)}</b>
+                    </div>
+                    <div style={{ fontSize: "80%" }}>
+                      Employee at{" "}
+                      {getHighlightedText(post.companyName, searchValue)}
+                    </div>
+                  </div>
+                </div>
+                <div className="d-flex">
+                  <div
+                    onClick={() => {
+                      updatePost(post.id);
+                    }}
+                  >
+                    <EditIcon
+                      className="mx-2"
+                      style={{ fontSize: "200%", color: "gray" }}
+                    />
+                  </div>
+                  <div
+                    style={{ cursor: "pointer" }}
+                    onClick={() => deletePost(post.id)}
+                  >
+                    <DeleteRoundedIcon
+                      className="mx-2"
+                      style={{ fontSize: "200%", color: "#dc3545" }}
+                    />
                   </div>
                 </div>
               </div>

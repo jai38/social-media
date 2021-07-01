@@ -122,19 +122,39 @@ export const Posts = ({ showOnly }) => {
                 >
                   {post.liked ? (
                     <ThumbUpAltIcon
-                      style={{ fontSize: "250%", color: "#198754" }}
+                      style={{
+                        fontSize: "250%",
+                        color: "#198754",
+                        cursor: "pointer",
+                      }}
                     />
                   ) : (
-                    <ThumbUpAltOutlinedIcon style={{ color: "gray" }} />
+                    <ThumbUpAltOutlinedIcon
+                      style={{
+                        fontSize: "250%",
+                        color: "gray",
+                        cursor: "pointer",
+                      }}
+                    />
                   )}
                 </div>
                 <div onClick={() => dislikePost(post.id)}>
                   {post.disliked ? (
                     <ThumbDownIcon
-                      style={{ fontSize: "250%", color: "#dc3545" }}
+                      style={{
+                        fontSize: "250%",
+                        color: "#dc3545",
+                        cursor: "pointer",
+                      }}
                     />
                   ) : (
-                    <ThumbDownAltOutlinedIcon style={{ color: "gray" }} />
+                    <ThumbDownAltOutlinedIcon
+                      style={{
+                        fontSize: "250%",
+                        color: "gray",
+                        cursor: "pointer",
+                      }}
+                    />
                   )}
                 </div>
               </div>

@@ -24,15 +24,21 @@ export const Header = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Link to="/create" className="header-links btn btn-outline-primary">
+            <Link
+              to="/create"
+              className="header-links btn text-white btn-primary"
+            >
               Create Post
             </Link>
-            <Link to="/liked" className="header-links btn btn-outline-success">
+            <Link
+              to="/liked"
+              className="header-links btn text-white btn-success"
+            >
               Liked Posts
             </Link>
             <Link
               to="/disliked"
-              className="header-links btn btn-outline-danger"
+              className="header-links btn text-white btn-danger"
             >
               Disliked Posts
             </Link>

@@ -16,16 +16,16 @@ import {
   LikePostContext,
   LoadingContext,
   SearchValueContext,
-  UpdatePostContext,
 } from "../App";
+import { useHistory } from "react-router";
 export const Posts = ({ showOnly }) => {
+  const history = useHistory();
   const loading = useContext(LoadingContext);
   let allPosts = useContext(AllPostContext);
   const likePost = useContext(LikePostContext);
   const dislikePost = useContext(DislikePostContext);
   const searchValue = useContext(SearchValueContext);
   const deletePost = useContext(DeletePostContext);
-  const updatePost = useContext(UpdatePostContext);
   if (allPosts) {
     if (showOnly == "Liked") {
       allPosts = allPosts.filter((post) => post.liked);
@@ -33,7 +33,6 @@ export const Posts = ({ showOnly }) => {
       allPosts = allPosts.filter((post) => post.disliked);
     }
   }
-  console.log(allPosts);
   const getHighlightedText = (text, highlight) => {
     if (highlight) {
       const parts = text.split(new RegExp(`(${highlight})`, "gi"));
@@ -80,8 +79,9 @@ export const Posts = ({ showOnly }) => {
                 </div>
                 <div className="d-flex">
                   <div
+                    style={{ cursor: "pointer" }}
                     onClick={() => {
-                      updatePost(post.id);
+                      history.push("/create", { postId: post.id });
                     }}
                   >
                     <EditIcon

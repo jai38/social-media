@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useHistory,
+} from "react-router-dom";
+import { CreatePost } from "./Pages/Create/CreatePost";
 import { Disliked } from "./Pages/Disliked/Disliked";
 import { Home } from "./Pages/Home/Home";
 import { Liked } from "./Pages/Liked/Liked";
@@ -11,13 +17,17 @@ export const DislikePostContext = React.createContext();
 export const SearchContext = React.createContext();
 export const SearchValueContext = React.createContext();
 export const DeletePostContext = React.createContext();
-export const UpdatePostContext = React.createContext();
+export const ChangePostContext = React.createContext();
+export const MessageContext = React.createContext();
+export const ChangeMessageContext = React.createContext();
 function App() {
   const [allUsers, setAllUsers] = useState();
   const [allPosts, setAllPosts] = useState();
   const [copyOfPosts, setCopyOfPosts] = useState();
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
+  const [message, setMessage] = useState();
+  const [maxId, setMaxId] = useState(100);
   const fetchData = async () => {
     const users = await fetchAllUsers();
     const posts = await fetchAllPosts(users);
@@ -117,32 +127,70 @@ function App() {
     setCopyOfPosts(currentAllPosts);
     // setLoading(false);
   };
-  const updatePost = (postId) => {
-    console.log("Update", postId);
+  const changeMessage = (message) => {
+    setMessage(message);
+  };
+  const changePost = (event, postId) => {
+    let currentAllPosts = allPosts;
+    event.preventDefault();
+    const name = event.target[0].value;
+    const companyName = event.target[1].value;
+    const title = event.target[2].value;
+    const body = event.target[3].value;
+    console.log(postId);
+    if (!postId) {
+      currentAllPosts.unshift({
+        id: maxId + 1,
+        name,
+        companyName,
+        title,
+        body,
+      });
+      setMaxId(maxId + 1);
+      setMessage("New Post Added Successfully");
+    } else {
+      currentAllPosts.forEach((post) => {
+        if (post.id == postId) {
+          post.name = name;
+          post.companyName = companyName;
+          post.title = title;
+          post.body = body;
+        }
+      });
+      setMessage("Post updated Successfully");
+    }
+    console.log(currentAllPosts);
+    setAllPosts(currentAllPosts);
+    setCopyOfPosts(currentAllPosts);
   };
   return (
     <div className="App">
       <Router>
         <Switch>
           <LoadingContext.Provider value={loading}>
-            <AllPostContext.Provider value={allPosts}>
-              <DeletePostContext.Provider value={deletePost}>
-                <UpdatePostContext.Provider value={updatePost}>
-                  <LikePostContext.Provider value={handleLikePost}>
-                    <DislikePostContext.Provider value={handleDislikePost}>
-                      <SearchContext.Provider value={handleSearch}>
-                        <SearchValueContext.Provider value={searchValue}>
-                          <Route path="/home" component={Home} />
-                          <Route path="/liked" component={Liked} />
-                          <Route path="/disliked" component={Disliked} />
-                          <Route path="/" exact component={Home} />
-                        </SearchValueContext.Provider>
-                      </SearchContext.Provider>
-                    </DislikePostContext.Provider>
-                  </LikePostContext.Provider>
-                </UpdatePostContext.Provider>
-              </DeletePostContext.Provider>
-            </AllPostContext.Provider>
+            <MessageContext.Provider value={message}>
+              <ChangeMessageContext.Provider value={changeMessage}>
+                <AllPostContext.Provider value={allPosts}>
+                  <DeletePostContext.Provider value={deletePost}>
+                    <LikePostContext.Provider value={handleLikePost}>
+                      <DislikePostContext.Provider value={handleDislikePost}>
+                        <SearchContext.Provider value={handleSearch}>
+                          <SearchValueContext.Provider value={searchValue}>
+                            <Route path="/home" component={Home} />
+                            <Route path="/liked" component={Liked} />
+                            <Route path="/disliked" component={Disliked} />
+                            <ChangePostContext.Provider value={changePost}>
+                              <Route path="/create" component={CreatePost} />
+                            </ChangePostContext.Provider>
+                            <Route path="/" exact component={Home} />
+                          </SearchValueContext.Provider>
+                        </SearchContext.Provider>
+                      </DislikePostContext.Provider>
+                    </LikePostContext.Provider>
+                  </DeletePostContext.Provider>
+                </AllPostContext.Provider>
+              </ChangeMessageContext.Provider>
+            </MessageContext.Provider>
           </LoadingContext.Provider>
         </Switch>
       </Router>

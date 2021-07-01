@@ -43,7 +43,7 @@ export const Header = () => {
               ref={searchRef}
               onChange={() => search(searchRef.current.value)}
               placeholder="Search by anything . . ."
-              className="mr-sm-2"
+              className="mr-sm-2 my-2"
             />
             {/* <Button variant="outline-success">Search</Button> */}
           </Form>

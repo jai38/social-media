@@ -56,6 +56,7 @@ export const CreatePost = () => {
                       ref={nameRef}
                       placeholder="Name"
                       name="name"
+                      required
                     />
                   </div>
                   <div>
@@ -63,6 +64,7 @@ export const CreatePost = () => {
                       placeholder="Company Name"
                       ref={companyNameRef}
                       name="companyName"
+                      required
                     />
                   </div>
                 </div>
@@ -75,6 +77,7 @@ export const CreatePost = () => {
                     placeholder="Title"
                     ref={titleRef}
                     name="title"
+                    required
                   />
                 </div>
                 <hr />
@@ -85,6 +88,7 @@ export const CreatePost = () => {
                     name="body"
                     rows="10"
                     placeholder="Start Writing here . . ."
+                    required
                   />
                 </div>
               </div>

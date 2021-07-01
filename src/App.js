@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  useHistory,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { CreatePost } from "./Pages/Create/CreatePost";
 import { Disliked } from "./Pages/Disliked/Disliked";
 import { Home } from "./Pages/Home/Home";
@@ -182,7 +177,15 @@ function App() {
                             <ChangePostContext.Provider value={changePost}>
                               <Route path="/create" component={CreatePost} />
                             </ChangePostContext.Provider>
-                            <Route path="/" exact component={Home} />
+                            <Route
+                              path="/"
+                              exact
+                              render={(props) => <Home {...props} />}
+                            />
+                            <Route
+                              path="/social-media"
+                              render={(props) => <Home {...props} />}
+                            />
                           </SearchValueContext.Provider>
                         </SearchContext.Provider>
                       </DislikePostContext.Provider>
